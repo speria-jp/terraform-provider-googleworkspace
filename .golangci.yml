@@ -1,6 +1,48 @@
 # Copyright (c) HashiCorp, Inc.
 # SPDX-License-Identifier: MPL-2.0
 
-linters-settings:
-  errcheck:
-    ignore: github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema:Set,fmt:.*
+version: "2"
+linters:
+  settings:
+    errcheck:
+      # ResourceData.Set errors and fmt writer errors are intentionally ignored,
+      # preserving the provider's previous golangci-lint v1 policy.
+      exclude-functions:
+        - (*github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema.ResourceData).Set
+        - fmt.Fprint
+        - fmt.Fprintf
+        - fmt.Fprintln
+        - fmt.Fscan
+        - fmt.Fscanf
+        - fmt.Fscanln
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    rules:
+      # Credentials come from explicit provider configuration. Replacing these
+      # APIs requires a separate compatibility and authentication review.
+      - linters:
+          - staticcheck
+        path: internal/provider/(provider|provider_config)(_test)?\.go
+        text: "SA1019: golang.org/x/oauth2/google.CredentialsFromJSON"
+      # SnakeToCamel relies on the existing ASCII-oriented title behavior.
+      # A Unicode-aware replacement could change provider output.
+      - linters:
+          - staticcheck
+        path: internal/provider/utils.go
+        text: "SA1019: strings.Title"
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
