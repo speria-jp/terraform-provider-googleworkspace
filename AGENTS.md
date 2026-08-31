@@ -10,8 +10,8 @@
 
 ## 基本方針
 
-- `AGENTS.md` は入口に留める。詳細な規約は `.agents/docs/`、実装計画は `.agents/plans/` を読む
-- `docs/` は `go generate` による生成物。**直接編集しない**（編集するのは `templates/` と `examples/`）
+- `AGENTS.md` は入口に留める。詳細な規約は `.agents/docs/`、実装計画は `docs/plans/` を読む
+- `docs/` は `go generate` による生成物。**直接編集しない**（編集するのは `templates/` と `examples/`）。例外は `docs/plans/`（手書きの実装計画置き場。tfplugindocs の生成対象外）
 - 非自明な変更は `.agents/docs/planning-review.md` に従って plan を作成してから実装する
 
 ## 構造 index
@@ -23,10 +23,10 @@
 | `internal/provider/eventual_consistency.go` | Google API の結果整合性を吸収する仕組み |
 | `templates/` | ドキュメントの編集元（tfplugindocs テンプレート） |
 | `examples/` | ドキュメントに埋め込まれる HCL サンプル |
-| `docs/` | 生成物（Terraform Registry 形式のドキュメント）。直接編集禁止 |
+| `docs/` | 生成物（Terraform Registry 形式のドキュメント）。`docs/plans/` を除き直接編集禁止 |
+| `docs/plans/` | 実装計画（`YYYYMMDD-<topic>.md`）。手書き。生成対象外 |
 | `.agents/docs/planning-review.md` | plan の status lifecycle、レビューフロー、AI critical review |
 | `.agents/docs/code-review.md` | code review の観点と出力形式 |
-| `.agents/plans/` | 実装計画（`YYYYMMDD-<topic>.md`） |
 
 ## 開発コマンド
 
@@ -62,6 +62,5 @@
 
 ## TODO（別途対応予定・このリポジトリの既知の課題）
 
-- Go 1.16 → 最新版への更新（`.go-version` / `go.mod` / CI）
-- golangci-lint / goreleaser / GitHub Actions のモダン化
+- goreleaser / release workflow のモダン化
 - 社内配布方法の決定（GitHub Releases + mirror or dev_overrides）

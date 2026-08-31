@@ -1,12 +1,12 @@
 # Plan レビュー規約
 
-このドキュメントは、`.agents/plans/` 配下の実装計画を作成または大きく更新するときのレビュー手順を定義する。
+このドキュメントは、`docs/plans/` 配下の実装計画を作成または大きく更新するときのレビュー手順を定義する。
 
 ## 基本フロー
 
 非自明な変更（新規 resource / data source の追加、schema 変更、認証・API スコープまわり、upstream からの取り込み、依存の大規模更新、リリース）は、原則として次の順で進める。
 
-1. Agent が plan draft を `.agents/plans/YYYYMMDD-<topic>.md` に作成する。
+1. Agent が plan draft を `docs/plans/YYYYMMDD-<topic>.md` に作成する。
 2. 人間が scope、実 Workspace 環境への影響、互換性方針をレビューする。
 3. Agent が人間レビューを反映する。
 4. AI critical review を実行する。
@@ -17,7 +17,7 @@ AI review は表現の好みではなく、実装前に潰すべき重大な抜�
 
 ## Plan status lifecycle
 
-`.agents/plans/` の status は、実装可否が読み取れる定型語彙に寄せる。
+`docs/plans/` の status は、実装可否が読み取れる定型語彙に寄せる。
 補足が必要な場合は、status 行の後に説明を書く。
 
 | status | 意味 |
