@@ -13,5 +13,11 @@ updates:
   - package-ecosystem: "gomod"
     directory: "/"
     schedule:
-      # Check for updates to Go modules every weekday
-      interval: "daily"
+      interval: "weekly"
+    groups:
+      minor-and-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
