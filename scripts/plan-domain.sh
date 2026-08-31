@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 
+set +x
 set -euo pipefail
 
 readonly minimum_terraform_version="0.14.0"
+readonly default_gcloud_token_host="https://oauth2.googleapis.com/token"
+readonly default_gcloud_mtls_token_host="https://oauth2.mtls.googleapis.com/token"
 
 fail() {
   printf 'Error: %s\n' "$*" >&2
@@ -32,41 +35,93 @@ require_environment() {
   [[ -n "${!name:-}" ]] || fail "$name is required."
 }
 
-absolute_credential_path() {
-  local credential_path="$1"
-  local credential_directory
+gcloud_without_logs() {
+  CLOUDSDK_CORE_DISABLE_FILE_LOGGING=1 \
+    gcloud --quiet --no-log-http --verbosity=error "$@"
+}
 
-  if [[ "$credential_path" == "~/"* ]]; then
-    credential_path="${HOME}/${credential_path#"~/"}"
+gcloud_property_value() {
+  local property="$1"
+  local value
+
+  if ! value="$(gcloud_without_logs config get-value "$property" 2>/dev/null)"; then
+    fail "Could not read gcloud ${property}."
+  fi
+  if [[ "$value" == "(unset)" ]]; then
+    value=""
   fi
 
-  [[ -f "$credential_path" ]] || fail "GOOGLEWORKSPACE_CREDENTIALS must point to a credential file."
-  [[ -r "$credential_path" ]] || fail "GOOGLEWORKSPACE_CREDENTIALS is not readable."
+  printf '%s\n' "$value"
+}
 
-  credential_directory="$(cd "$(dirname "$credential_path")" && pwd -P)"
-  printf '%s/%s\n' "$credential_directory" "$(basename "$credential_path")"
+require_gcloud_property_unset() {
+  local property="$1"
+  [[ -z "$(gcloud_property_value "$property")" ]] ||
+    fail "gcloud ${property} must be unset."
+}
+
+require_gcloud_property_value() {
+  local property="$1"
+  local expected="$2"
+  [[ "$(gcloud_property_value "$property")" == "$expected" ]] ||
+    fail "gcloud ${property} must be ${expected}."
 }
 
 main() {
   local repository_root example_directory bin_directory provider_binary cli_config
-  local terraform_version credential_path
+  local terraform_version active_account access_token
 
   require_command go
   require_command terraform
+  require_command gcloud
   require_environment DOMAIN
-  require_environment GOOGLEWORKSPACE_CREDENTIALS
+  require_environment GOOGLEWORKSPACE_SERVICE_ACCOUNT_EMAIL
   require_environment GOOGLEWORKSPACE_CUSTOMER_ID
   require_environment GOOGLEWORKSPACE_IMPERSONATED_USER_EMAIL
 
-  unset TF_CLI_ARGS TF_CLI_ARGS_plan TF_CLI_ARGS_validate TF_CLI_ARGS_version
+  unset \
+    TF_CLI_ARGS \
+    TF_CLI_ARGS_plan \
+    TF_CLI_ARGS_validate \
+    TF_CLI_ARGS_version \
+    TF_REATTACH_PROVIDERS \
+    TF_LOG \
+    TF_LOG_CORE \
+    TF_LOG_PROVIDER \
+    TF_LOG_PATH \
+    TF_LOG_PATH_MASK \
+    TF_LOG_SDK \
+    TF_LOG_SDK_HELPER_RESOURCE \
+    TF_LOG_SDK_HELPER_SCHEMA \
+    TF_LOG_SDK_PROTO_DATA_DIR \
+    TF_ACC_LOG \
+    TF_ACC_LOG_PATH \
+    GOOGLE_OAUTH_ACCESS_TOKEN \
+    GOOGLEWORKSPACE_CREDENTIALS \
+    GOOGLEWORKSPACE_CLOUD_KEYFILE_JSON \
+    GOOGLE_CREDENTIALS \
+    GOOGLE_APPLICATION_CREDENTIALS \
+    CLOUDSDK_AUTH_ACCESS_TOKEN
 
   terraform_version="$(terraform version | sed -n '1s/^Terraform v//p')"
   terraform_version_is_supported "$terraform_version" ||
     fail "Terraform ${minimum_terraform_version} or newer is required."
 
-  credential_path="$(absolute_credential_path "$GOOGLEWORKSPACE_CREDENTIALS")"
-  export GOOGLEWORKSPACE_CREDENTIALS="$credential_path"
-  unset GOOGLE_OAUTH_ACCESS_TOKEN
+  require_gcloud_property_unset auth/impersonate_service_account
+  require_gcloud_property_unset auth/access_token_file
+  require_gcloud_property_unset auth/credential_file_override
+  require_gcloud_property_value auth/token_host "$default_gcloud_token_host"
+  require_gcloud_property_value auth/mtls_token_host "$default_gcloud_mtls_token_host"
+
+  active_account="$(
+    gcloud_without_logs auth list \
+      --filter=status:ACTIVE \
+      --format='value(account)' \
+      --limit=1
+  )"
+  [[ -n "$active_account" ]] || fail "gcloud has no active account. Run gcloud auth login."
+  [[ "$active_account" != *.gserviceaccount.com ]] ||
+    fail "gcloud active account must be a user account authenticated with gcloud auth login."
 
   repository_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
   example_directory="${repository_root}/examples/data-sources/googleworkspace_domain"
@@ -91,7 +146,16 @@ main() {
   export TF_IN_AUTOMATION=1
 
   terraform -chdir="$example_directory" validate
-  terraform -chdir="$example_directory" plan -input=false -var="domain_name=${DOMAIN}"
+
+  access_token="$(gcloud_without_logs auth print-access-token "$active_account")"
+  [[ -n "$access_token" ]] || fail "gcloud returned an empty access token."
+  export GOOGLE_OAUTH_ACCESS_TOKEN="$access_token"
+  trap 'unset GOOGLE_OAUTH_ACCESS_TOKEN; access_token=' EXIT
+
+  terraform -chdir="$example_directory" plan \
+    -input=false \
+    -var="domain_name=${DOMAIN}" \
+    -var="service_account_email=${GOOGLEWORKSPACE_SERVICE_ACCOUNT_EMAIL}"
 }
 
 if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then

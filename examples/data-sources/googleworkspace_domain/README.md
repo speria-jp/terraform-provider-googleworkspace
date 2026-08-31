@@ -4,30 +4,33 @@
 
 ## 1. Google 側の認証を準備する
 
-1. Google Cloud で Admin SDK API を有効にし、ドメイン全体の委任を有効にした service account と JSON key を用意します。
-2. Google Admin コンソールの「セキュリティ > アクセスとデータ管理 > API の制御 > ドメイン全体の委任」で、service account の OAuth client ID に次の scope を許可します。
+1. Google Cloud で Admin SDK API と IAM Service Account Credentials API を有効にし、ドメイン全体の委任を有効にした service account を用意します。JSON key は作成しません。
+2. 実行する Google Cloud ユーザーに、service account の `roles/iam.serviceAccountTokenCreator` を付与します。
+3. Google Admin コンソールの「セキュリティ > アクセスとデータ管理 > API の制御 > ドメイン全体の委任」で、service account の OAuth client ID に次の scope を許可します。
 
    ```text
    https://www.googleapis.com/auth/admin.directory.domain.readonly
    ```
 
-3. なりすまし先には、ドメインを参照できる管理者権限（該当する Domains 権限または Super Admin）を持つユーザーを選びます。
+4. なりすまし先には、ドメインを参照できる管理者権限（該当する Domains 権限または Super Admin）を持つユーザーを選びます。
+5. `gcloud auth login` を実行し、上記の Google Cloud ユーザーを active account にします。
 
 参考:
 
 - [service account とドメイン全体の委任](https://developers.google.com/workspace/guides/create-credentials#service-account)
 - [ドメイン全体の委任を設定する](https://developers.google.com/identity/protocols/oauth2/service-account#delegatingauthority)
+- [service account impersonation](https://cloud.google.com/docs/authentication/use-service-account-impersonation)
 - [Domains の管理者権限](https://knowledge.workspace.google.com/admin/users/administrator-privilege-definitions#domains)
 
 ## 2. 環境変数を設定する
 
 ```bash
-export GOOGLEWORKSPACE_CREDENTIALS="/absolute/path/to/service-account-key.json"
+export GOOGLEWORKSPACE_SERVICE_ACCOUNT_EMAIL="service-account@project-id.iam.gserviceaccount.com"
 export GOOGLEWORKSPACE_CUSTOMER_ID="C01234567"
 export GOOGLEWORKSPACE_IMPERSONATED_USER_EMAIL="admin@example.com"
 ```
 
-`GOOGLEWORKSPACE_CREDENTIALS` には、リポジトリ外に保存した JSON key のファイルパスを指定してください。key の内容をリポジトリへ保存しないでください。
+access token は実行時に gcloud の active account から取得します。token や JSON key を環境変数またはリポジトリへ保存する必要はありません。
 
 ## 3. リポジトリルートで実行する
 
