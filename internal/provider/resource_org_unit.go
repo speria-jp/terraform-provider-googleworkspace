@@ -166,6 +166,9 @@ func resourceOrgUnitCreate(ctx context.Context, d *schema.ResourceData, meta int
 
 		return fmt.Errorf("timed out while waiting for %s to be inserted", cc.resourceType)
 	})
+	if err != nil {
+		return diag.FromErr(err)
+	}
 
 	log.Printf("[DEBUG] Finished creating OrgUnit %q: %#v", d.Id(), ouName)
 

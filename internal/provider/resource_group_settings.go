@@ -437,7 +437,7 @@ func resourceGroupSettingsCreate(ctx context.Context, d *schema.ResourceData, me
 		} else if retryErr != nil {
 			return fmt.Errorf("unexpected error during retries of %s: %s", cc.resourceType, retryErr)
 		} else {
-			cc.handleNewEtag(newGroupSettings.ServerResponse.Header.Get("Etag"))
+			cc.handleNewEtag(newGroupSettings.Header.Get("Etag"))
 		}
 
 		return fmt.Errorf("timed out while waiting for group settings to be updated")
@@ -723,7 +723,7 @@ func resourceGroupSettingsUpdate(ctx context.Context, d *schema.ResourceData, me
 		} else if retryErr != nil {
 			return fmt.Errorf("unexpected error during retries of %s: %s", cc.resourceType, retryErr)
 		} else {
-			cc.handleNewEtag(newGroupSettings.ServerResponse.Header.Get("Etag"))
+			cc.handleNewEtag(newGroupSettings.Header.Get("Etag"))
 		}
 
 		return fmt.Errorf("timed out while waiting for group settings to be updated")

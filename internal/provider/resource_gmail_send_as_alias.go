@@ -275,7 +275,7 @@ func resourceGmailSendAsAliasDelete(ctx context.Context, d *schema.ResourceData,
 func resourceGmailSendAsAliasImport(ctx context.Context, d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
 	idParts := strings.Split(d.Id(), sendAsIdSeparator)
 	if len(idParts) != 2 || idParts[0] == "" || idParts[1] == "" {
-		return nil, fmt.Errorf("Unexpected format of ID (%q), expected primary-email%ssend-as-email", d.Id(), sendAsIdSeparator)
+		return nil, fmt.Errorf("unexpected format of ID (%q), expected primary-email%ssend-as-email", d.Id(), sendAsIdSeparator)
 	}
 	d.Set("primary_email", idParts[0])
 	d.Set("send_as_email", idParts[1])
