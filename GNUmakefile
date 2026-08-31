@@ -29,6 +29,11 @@ sweep:
 test: fmtcheck
 	go test -count=1 $(TESTARGS) -timeout=30s $(TEST)
 
+.PHONY: plan-domain
+plan-domain: export DOMAIN := $(DOMAIN)
+plan-domain:
+	@./scripts/plan-domain.sh
+
 # Run acceptance tests
 .PHONY: testacc
 testacc: fmtcheck

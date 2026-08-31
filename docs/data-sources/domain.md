@@ -16,8 +16,13 @@ Domain data source in the Terraform Googleworkspace provider. Domain resides und
 # Copyright (c) HashiCorp, Inc.
 # SPDX-License-Identifier: MPL-2.0
 
+variable "domain_name" {
+  description = "Google Workspace domain to read."
+  type        = string
+}
+
 data "googleworkspace_domain" "example" {
-  domain_name = "example.com"
+  domain_name = var.domain_name
 }
 
 output "domain_verified" {
