@@ -5,7 +5,6 @@ package googleworkspace
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/mail"
 	"os"
@@ -45,7 +44,7 @@ func pathOrContents(poc string) (string, bool, error) {
 	}
 
 	if _, err := os.Stat(path); err == nil {
-		contents, err := ioutil.ReadFile(path)
+		contents, err := os.ReadFile(path)
 		if err != nil {
 			return string(contents), true, err
 		}
@@ -79,7 +78,7 @@ func handleNotFoundError(err error, d *schema.ResourceData, resource string) dia
 // since that would require us to generate a very particular ordering of arguments.
 func Nprintf(format string, params map[string]interface{}) string {
 	for key, val := range params {
-		format = strings.Replace(format, "%{"+key+"}", fmt.Sprintf("%v", val), -1)
+		format = strings.ReplaceAll(format, "%{"+key+"}", fmt.Sprintf("%v", val))
 	}
 	return format
 }
@@ -205,8 +204,5 @@ func sortListOfInterfaces(v []interface{}) []string {
 // isEmail returns a boolean indicating if the input string is parsable as an email
 func isEmail(input string) bool {
 	_, err := mail.ParseAddress(input)
-	if err != nil {
-		return false
-	}
-	return true
+	return err == nil
 }

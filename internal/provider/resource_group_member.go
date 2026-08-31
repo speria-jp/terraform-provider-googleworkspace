@@ -354,7 +354,7 @@ func resourceGroupMemberImport(ctx context.Context, d *schema.ResourceData, meta
 
 	// id is of format "groups/<group_id>/members/<member_id>"
 	if len(parts) != 4 {
-		return nil, fmt.Errorf("Group Member Id (%s) is not of the correct format (groups/<group_id>/members/<member_id>)", d.Id())
+		return nil, fmt.Errorf("group member ID (%s) is not of the correct format (groups/<group_id>/members/<member_id>)", d.Id())
 	}
 
 	d.Set("group_id", parts[1])

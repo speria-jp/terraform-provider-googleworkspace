@@ -1013,7 +1013,7 @@ func resourceUserCreate(ctx context.Context, d *schema.ResourceData, meta interf
 	if d.Get("password").(string) == "" {
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
-			Summary:  fmt.Sprintf("Password is required when creating a new user"),
+			Summary:  "Password is required when creating a new user",
 		})
 
 		return diags
