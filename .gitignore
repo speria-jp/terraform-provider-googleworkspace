@@ -36,3 +36,5 @@ website/vendor
 
 # AI agent local files
 .claude/settings.local.json
+
+.envrc
