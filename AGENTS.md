@@ -4,8 +4,8 @@
 
 ## このリポジトリについて
 
-- upstream の [hashicorp/terraform-provider-googleworkspace](https://github.com/hashicorp/terraform-provider-googleworkspace) はアーカイブ済み。この fork は speria-jp が社内利用のためにメンテナンスする
-- Terraform Registry への publish はしない。社内での配布方法は未決（GitHub Releases + provider mirror、または各自ビルド + `dev_overrides` を想定）
+- upstream の [hashicorp/terraform-provider-googleworkspace](https://github.com/hashicorp/terraform-provider-googleworkspace) はアーカイブ済み。この fork は speria-jp がメンテナンスする
+- Terraform Registry の community provider `speria-jp/googleworkspace` として公開する
 - Go 製、terraform-plugin-sdk v2 ベースの Terraform provider
 
 ## 基本方針
@@ -59,8 +59,3 @@
 - `ForceNew` が付いた field の変更は、apply 時に**実リソースの削除と再作成**を引き起こす。ユーザーやグループのような実体では特に慎重に扱う
 - Google Directory API は eventual consistency がある。作成直後の読み取りには `eventual_consistency.go` の既存パターンを使う
 - `templates/` や schema の `Description` を変更したら `make generate` を実行し、`docs/` の差分もコミットに含める
-
-## TODO（別途対応予定・このリポジトリの既知の課題）
-
-- goreleaser / release workflow のモダン化
-- 社内配布方法の決定（GitHub Releases + mirror or dev_overrides）

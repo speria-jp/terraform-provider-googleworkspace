@@ -1,101 +1,78 @@
-
-<!-- archived-provider -->
->Please note: This Terraform provider is archived, per our [provider archiving process](https://terraform.io/docs/internals/archiving.html). What does this mean?
->1. The code repository and all commit history will still be available.
->1. Existing released binaries will remain available on the releases site.
->1. Issues and pull requests are not being monitored.
->1. New releases will not be published.
->
->If anyone from the community or an interested third party is willing to maintain it, they can fork the repository and [publish it](https://www.terraform.io/docs/registry/providers/publishing.html) to the Terraform Registry. If you are interested in maintaining this provider, please reach out to the [Terraform Provider Development Program](https://www.terraform.io/guides/terraform-provider-development-program.html) at *terraform-provider-dev@hashicorp.com*.
-
-
-
 # Terraform Provider Google Workspace
-<a href="https://terraform.io">
-    <img src="https://cdn.rawgit.com/hashicorp/terraform-website/master/content/source/assets/images/logo-hashicorp.svg" alt="Terraform logo" align="right" height="50" />
-</a>
 
-![Status: Tech Preview](https://img.shields.io/badge/status-experimental-EAAA32) [![Releases](https://img.shields.io/github/release/hashicorp/terraform-provider-googleworkspace.svg)](https://github.com/hashicorp/terraform-provider-googleworkspace/releases)
-[![LICENSE](https://img.shields.io/github/license/hashicorp/terraform-provider-googleworkspace.svg)](https://github.com/hashicorp/terraform-provider-googleworkspace/blob/main/LICENSE)![Unit tests](https://github.com/hashicorp/terraform-provider-googleworkspace/workflows/Unit%20tests/badge.svg)
+[![Releases](https://img.shields.io/github/release/speria-jp/terraform-provider-googleworkspace.svg)](https://github.com/speria-jp/terraform-provider-googleworkspace/releases)
+[![License](https://img.shields.io/github/license/speria-jp/terraform-provider-googleworkspace.svg)](https://github.com/speria-jp/terraform-provider-googleworkspace/blob/main/LICENSE)
+[![Unit tests](https://github.com/speria-jp/terraform-provider-googleworkspace/actions/workflows/test.yml/badge.svg)](https://github.com/speria-jp/terraform-provider-googleworkspace/actions/workflows/test.yml)
 
-This Google Workspace provider for Terraform allows you to manage domains, users, and groups in your Google Workspace.
-
-This provider is a technical preview, which means it's a community supported project. It still requires extensive testing and polishing to mature into a HashiCorp officially supported project. Please [file issues](https://github.com/hashicorp/terraform-provider-googleworkspace/issues/new/choose) generously and detail your experience while using the provider. We welcome your feedback.
-
-## Experimental Status
-
-By using the software in this repository (the "Software"), you acknowledge that: (1) the Software is still in development, may change, and has not been released as a commercial product by HashiCorp and is not currently supported in any way by HashiCorp; (2) the Software is provided on an "as-is" basis, and may include bugs, errors, or other issues; (3) the Software is NOT INTENDED FOR PRODUCTION USE, use of the Software may result in unexpected results, loss of data, or other unexpected results, and HashiCorp disclaims any and all liability resulting from use of the Software; and (4) HashiCorp reserves all rights to make all decisions about the features, functionality and commercial release (or non-release) of the Software, at any time and without any obligation or liability whatsoever.
+This Terraform provider manages users, groups, domains, and other resources in Google Workspace.
+It is a community-maintained fork of the archived
+[`hashicorp/terraform-provider-googleworkspace`](https://github.com/hashicorp/terraform-provider-googleworkspace)
+provider and is not an official HashiCorp product.
 
 ## Maintainers
 
-This provider plugin is maintained by the Terraform team at [HashiCorp](https://www.hashicorp.com/)
+This provider is maintained by [speria-jp](https://github.com/speria-jp).
 
 ## Requirements
 
--	[Terraform](https://www.terraform.io/downloads.html) >= 0.13.x
--	[Go](https://go.dev/doc/install) >= 1.27.0
+- [Terraform](https://developer.hashicorp.com/terraform/install) >= 0.13.x
+- [Go](https://go.dev/doc/install) >= 1.27.0
 
-## Upgrading the provider
+## Using the provider
 
-The Google Workspace provider doesn't upgrade automatically once you've started using it. After a new release you can run
+Declare the community provider source and a compatible version constraint:
 
-```bash
+```hcl
+terraform {
+  required_providers {
+    googleworkspace = {
+      source  = "speria-jp/googleworkspace"
+      version = "~> 0.8"
+    }
+  }
+}
+```
+
+After the first Registry release, see the
+[Google Workspace Provider documentation](https://registry.terraform.io/providers/speria-jp/googleworkspace/latest/docs)
+for configuration and resource documentation.
+
+To upgrade an existing installation within its configured version constraints, run:
+
+```sh
 terraform init -upgrade
 ```
 
-to upgrade to the latest stable version of the Google Workspace provider. See the [Terraform website](https://www.terraform.io/docs/configuration/providers.html#provider-versions)
-for more information on provider upgrades, and how to set version constraints on your provider.
+## Developing the provider
 
-## Building The Provider
+Clone the repository, enter it, and build the provider:
 
-1. Clone the repository
-1. Enter the repository directory
-1. Build the provider using the Go `install` command or `make build`:
 ```sh
-$ make build
+make build
 ```
 
-## Adding Dependencies
+To add a dependency, update the Go modules and commit both module files:
 
-This provider uses [Go modules](https://github.com/golang/go/wiki/Modules).
-Please see the Go documentation for the most up to date information about using Go modules.
-
-To add a new dependency `github.com/author/dependency` to your Terraform provider:
-
-```
+```sh
 go get github.com/author/dependency
 go mod tidy
 ```
 
-Then commit the changes to `go.mod` and `go.sum`.
+Run unit tests with `make test`. Acceptance tests use a real Google Workspace organization and
+must only be run when their external effects are explicitly intended.
 
-## Using The provider
-
-See the [Google Workspace Provider documentation](https://registry.terraform.io/providers/hashicorp/googleworkspace/latest/docs) to get started using the
-Google Workspace provider.
-
-## Developing the Provider
-
-If you wish to work on the provider, you'll first need [Go](http://www.golang.org) installed on your machine (see [Requirements](#requirements) above).
-You can use [goenv](https://github.com/syndbg/goenv) to manage your Go version.
-To compile the provider, run `go install`. This will build the provider and put the provider binary in the `$GOPATH/bin` directory.
-
-To generate or update documentation, run `go generate`.
-
-In order to run the full suite of Acceptance tests, run `make testacc`.
-
-*Note:* Acceptance tests create real resources, and often cost money to run.
+Documentation under `docs/` is generated from `templates/` and `examples/` with:
 
 ```sh
-$ make testacc
+make generate
 ```
 
-For guidance on common development practices such as testing changes, see the [contribution guidelines](https://github.com/hashicorp/terraform-provider-googleworkspace/blob/main/.github/CONTRIBUTING.md).
-If you have other development questions we don't cover, please file an issue!
+See the [contribution guidelines](https://github.com/speria-jp/terraform-provider-googleworkspace/blob/main/.github/CONTRIBUTING.md)
+for local provider installation and contribution details. Please report problems through
+[GitHub Issues](https://github.com/speria-jp/terraform-provider-googleworkspace/issues).
 
-## Special Recognition
+## Attribution
 
-* [Chase](https://github.com/DeviaVir) - for the excellent work creating the `DeviaVir/terraform-provider-gsuite` provider, the inspiration for this project.
-
-## General Feedback
-* How can we best support you ? - [feedback](https://forms.gle/XeqgPiFTtdevcRiu8)
+This project retains the history and MPL-2.0 license of HashiCorp's archived provider.
+Special thanks to [Chase](https://github.com/DeviaVir) for the original
+`DeviaVir/terraform-provider-gsuite` provider that inspired it.

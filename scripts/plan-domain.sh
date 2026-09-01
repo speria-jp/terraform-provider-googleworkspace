@@ -137,7 +137,7 @@ main() {
   {
     printf 'provider_installation {\n'
     printf '  dev_overrides {\n'
-    printf '    "hashicorp/googleworkspace" = "%s"\n' "$bin_directory"
+    printf '    "speria-jp/googleworkspace" = "%s"\n' "$bin_directory"
     printf '  }\n'
     printf '}\n'
   } >"$cli_config"

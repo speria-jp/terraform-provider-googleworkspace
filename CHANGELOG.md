@@ -1,4 +1,15 @@
 ## 0.8.0 (Unreleased)
+
+IMPROVEMENTS:
+
+* provider: modernized the Go toolchain, dependencies, linting, and fork CI
+* development: added a keyless local read-only domain plan workflow
+* release: prepared the fork as the `speria-jp/googleworkspace` community provider
+
+BUG FIXES:
+
+* chrome policy: restored compatibility with the current Google API types
+
 ## 0.7.0 (June 10, 2022)
 
 FEATURES:
