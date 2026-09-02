@@ -33,7 +33,7 @@ terraform {
 }
 ```
 
-After the first Registry release, see the
+See the
 [Google Workspace Provider documentation](https://registry.terraform.io/providers/speria-jp/googleworkspace/latest/docs)
 for configuration and resource documentation.
 
