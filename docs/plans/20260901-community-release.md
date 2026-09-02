@@ -1,6 +1,6 @@
 # speria-jp fork の Terraform Registry 公開
 
-- Status: `Ready for Implementation`
+- Status: `Implemented`
 - 作成日: 2026-09-01
 - 関連: `speria-jp/admin` の `docs/plans/20260901-google-workspace-root.md`
 
@@ -135,3 +135,7 @@ agent は keypair・secret・Registry credential を作成、閲覧、保存し�
 ### 2026-09-02 実装状況の記録
 
 Implementation 1〜6 は PR #3（2026-09-01 merge）で完了した。残りは User-owned Actions 1〜4 と Implementation 7〜10。人間が実行するコマンドと GPG 鍵生成時の選択項目、version ごとの release 手順を `RELEASING.md` に runbook として切り出した。runbook では鍵種別を RSA 4096 とする（DSA は GnuPG で 3072 bit 上限かつ deprecated 扱いのため）。
+
+### 2026-09-02 実装完了
+
+署名 preflight の成功後に `v0.8.0` tag を発行し、draft の asset、署名、checksum を検証して finalize した。Terraform Registry の `speria-jp/googleworkspace` として初回 publish し、release event の webhook が作成された。空の consumer fixture で `terraform init` が v0.8.0 を署名検証付き（key ID `0EF194ED7615F8F2`）で取得することを確認し、repository の homepage を Registry の新ページへ更新した。
