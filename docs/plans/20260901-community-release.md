@@ -131,3 +131,7 @@ agent は keypair・secret・Registry credential を作成、閲覧、保存し�
 ### 2026-09-01 AI critical review cycle 2: クリア
 
 前回 3 finding の解消を確認し、「No critical issues remain.」「plan can move to `Ready for Implementation`」の判定を受けた。
+
+### 2026-09-02 実装状況の記録
+
+Implementation 1〜6 は PR #3（2026-09-01 merge）で完了した。残りは User-owned Actions 1〜4 と Implementation 7〜10。人間が実行するコマンドと GPG 鍵生成時の選択項目、version ごとの release 手順を `RELEASING.md` に runbook として切り出した。runbook では鍵種別を RSA 4096 とする（DSA は GnuPG で 3072 bit 上限かつ deprecated 扱いのため）。

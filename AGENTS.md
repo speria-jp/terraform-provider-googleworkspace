@@ -27,6 +27,7 @@
 | `docs/plans/` | 実装計画（`YYYYMMDD-<topic>.md`）。手書き。生成対象外 |
 | `.agents/docs/planning-review.md` | plan の status lifecycle、レビューフロー、AI critical review |
 | `.agents/docs/code-review.md` | code review の観点と出力形式 |
+| `RELEASING.md` | release runbook。GPG 鍵と secrets の初回設定、preflight、tag、finalize、Registry publish の手順 |
 
 ## 開発コマンド
 
