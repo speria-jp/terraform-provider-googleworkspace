@@ -1,6 +1,6 @@
 # Application Default Credentials からの service account impersonation
 
-- Status: `Ready for Implementation`
+- Status: `Implemented`
 - 作成日: 2026-09-03
 - 対象: `internal/provider/provider_config.go` の認証経路選択
 - 関連: `docs/plans/20260831-plan-domain-data-source.md`（keyless 経路の threat model）
@@ -331,6 +331,10 @@ ADC impersonation を利用するには、IAM Service Account Credentials API �
 上記 Gmail finding の対応と、承認済みの認証経路、互換性、quota project、IAM 要件、verifier、stop condition を repository code および pinned dependency と照合した。追加の P0 / P1 finding と implementation readiness blocker はなく、`Ready for Implementation` と判定した。`go mod verify` も成功した。
 
 ## 更新履歴
+
+### 2026-09-03 実装完了
+
+ADC と access token の service account impersonation を共通化し、ADC type による経路選択、private key を持たない ADC の fail-fast、quota project を保持する transport、Gmail sub-client の認証設定引き継ぎを実装した。schema の型・必須性は変更していない。unit test、docs、example、CHANGELOG を更新し、全 verifier と fresh-context code review（P0 / P1 finding なし）を通過した。
 
 ### 2026-09-03 初版
 
