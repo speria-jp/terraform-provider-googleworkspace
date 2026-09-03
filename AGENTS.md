@@ -8,6 +8,16 @@
 - Terraform Registry の community provider `speria-jp/googleworkspace` として公開する
 - Go 製、terraform-plugin-sdk v2 ベースの Terraform provider
 
+## 公開範囲の注意
+
+このリポジトリは public である。次を `docs/`、`docs/plans/`、`templates/`、`examples/`、commit message、PR、issue、CHANGELOG に書かない。
+
+- 本 provider を利用する社内リポジトリ（private）の名前、URL、内部のファイルパス。言及が必要なときは「利用側リポジトリ」と呼ぶ
+- 実環境の値。customer ID、ドメイン、メールアドレス、Google Cloud project ID、service account、ユーザーやグループの実名。example と docs では placeholder（`example.com`、`A01b123xz`）または環境変数名で表す
+- credential、token、GPG 鍵、passphrase、Registry credential
+
+plan、commit、PR を書く前に `git grep` で上記が混入していないことを確認する。
+
 ## 基本方針
 
 - `AGENTS.md` は入口に留める。詳細な規約は `.agents/docs/`、実装計画は `docs/plans/` を読む
