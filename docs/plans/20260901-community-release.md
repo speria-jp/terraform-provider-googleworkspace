@@ -2,13 +2,13 @@
 
 - Status: `Implemented`
 - 作成日: 2026-09-01
-- 関連: `speria-jp/admin` の `docs/plans/20260901-google-workspace-root.md`
+- 関連: 利用側リポジトリ（本 provider を使う社内の Terraform リポジトリ。private のため名前は書かない）の Google Workspace root 設計 plan
 
 ## 背景
 
-`speria-jp/admin` では Google Workspace の users / groups を Terraform 管理する方針が人間レビュー済みであり、provider source を `speria-jp/googleworkspace`、version を `~> 0.8` とすることが決定した。現在の fork は公開リポジトリだが GitHub Release と Terraform Registry の provider が存在せず、残置された release workflow は HashiCorp 社内 secret に依存するため fork では動作しない。
+利用側リポジトリでは Google Workspace の users / groups を Terraform 管理する方針が人間レビュー済みであり、provider source を `speria-jp/googleworkspace`、version を `~> 0.8` とすることが決定した。現在の fork は公開リポジトリだが GitHub Release と Terraform Registry の provider が存在せず、残置された release workflow は HashiCorp 社内 secret に依存するため fork では動作しない。
 
-本リポジトリの従来方針「Terraform Registry へ publish しない」は、上記 admin plan とその実装依頼によって「community provider として publish する」へ変更されたものとして扱う。
+本リポジトリの従来方針「Terraform Registry へ publish しない」は、上記の利用側 plan とその実装依頼によって「community provider として publish する」へ変更されたものとして扱う。
 
 ## Goal
 
@@ -73,7 +73,7 @@ agent は keypair・secret・Registry credential を作成、閲覧、保存し�
 
 ### Default Decisions
 
-`speria-jp/admin` の人間レビュー済み plan と今回の実装依頼により、次を決定済みとする。
+利用側リポジトリの人間レビュー済み plan と今回の実装依頼により、次を決定済みとする。
 
 1. fork を Terraform Registry の community provider `speria-jp/googleworkspace` として公開する。
 2. 最初の version は `v0.8.0` とする。
@@ -120,9 +120,13 @@ agent は keypair・secret・Registry credential を作成、閲覧、保存し�
 
 ## 更新履歴
 
+### 2026-09-03 利用側リポジトリの名前を削除
+
+本リポジトリは public であり利用側リポジトリは private のため、その名前と内部のファイルパスを本文から削除し「利用側リポジトリ」に置き換えた。内容の変更はない。
+
 ### 2026-09-01 初版
 
-`speria-jp/admin` の Google Workspace Terraform root 実装に必要な provider 公開手順を、公式 publishing guide と provider scaffolding に合わせて具体化した。
+利用側リポジトリの Google Workspace Terraform root 実装に必要な provider 公開手順を、公式 publishing guide と provider scaffolding に合わせて具体化した。
 
 ### 2026-09-01 AI critical review cycle 1 反映
 

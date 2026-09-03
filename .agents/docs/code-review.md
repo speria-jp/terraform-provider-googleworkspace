@@ -15,6 +15,7 @@ Critical finding として扱う観点は次の通り。
 - import（`Importer`）が壊れる変更。
 - eventual consistency の考慮漏れ（作成直後の読み取りで `eventual_consistency.go` のパターンを使っていない）。
 - credential、token、sensitive 値を log、diff、error message に出す問題。
+- 利用側 private リポジトリの名前・内部パス、実環境の値（customer ID、メールアドレス、project ID 等）を public な文書、commit message、PR に書く問題（`AGENTS.md` の「公開範囲の注意」）。
 - Google API のエラーを握りつぶす、または誤ったリトライをする問題。
 - missing critical tests（新規 resource / data source に対する test の欠如）。
 - `templates/` や schema `Description` の変更に対する `make generate` 漏れ、`docs/` の手編集。
@@ -104,3 +105,4 @@ fresh context review に出す前に、実装 agent は以下を確認する。
 - `templates/` や `Description` を変更した場合、`make generate` を実行して `docs/` の差分を含めたか。
 - `make testacc` / `make sweep` を明示的な依頼なしに実行していないか。
 - credential や sensitive 値が log / error message / 報告に出ていないか。
+- 利用側 private リポジトリの名前や実環境の値が diff、commit message、PR 本文に出ていないか。

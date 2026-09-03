@@ -43,6 +43,7 @@ AI critical review 後に実装へ進める前に、plan が実装 agent に渡�
 - stop condition が明記されているか、関連規約に委譲されている。
 - unresolved question が実装を止めるものかどうか分類されている。
 - state 互換性、実 Workspace 環境への影響、認証情報の扱い、リリースに関わる未決判断が残っていない。
+- public リポジトリの文書として、利用側 private リポジトリの名前・内部パス・実環境の値を含まない（`AGENTS.md` の「公開範囲の注意」）。
 
 ## Question classification
 
