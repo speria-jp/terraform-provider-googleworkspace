@@ -1,5 +1,18 @@
 ## 0.9.0 (Unreleased)
 
+BREAKING CHANGES:
+
+* provider: using `impersonated_user_email` with Application Default Credentials that do not contain a service account private key now requires `service_account`; remove `impersonated_user_email` when intentionally authenticating as the ADC principal, or set `service_account` for domain-wide delegation
+
+IMPROVEMENTS:
+
+* provider: added service account impersonation from Application Default Credentials, allowing keyless domain-wide delegation without passing an `access_token`
+* provider: added an actionable authentication error when private-keyless Application Default Credentials cannot apply `impersonated_user_email` directly
+
+BUG FIXES:
+
+* gmail send-as alias: user-specific Gmail clients now inherit configured `access_token` and `service_account` values instead of silently falling back to Application Default Credentials, while direct user access token and user ADC authentication remain supported when provider-level impersonation is not configured
+
 ## 0.8.0 (September 2, 2026)
 
 IMPROVEMENTS:

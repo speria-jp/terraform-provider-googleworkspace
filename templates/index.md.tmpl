@@ -60,6 +60,18 @@ The scopes declared in the provider's configuration need to match, or be a subse
 Only users with access to the Admin APIs can access the Admin SDK Directory API, therefore your service account needs to impersonate one of those users to access the Admin SDK Directory API. This user's email
 must be set in the environment variable `GOOGLEWORKSPACE_IMPERSONATED_USER_EMAIL` or in the `impersonated_user_email` attribute in the provider. Additionally, the user must have logged in at least once and accepted the Google Workspace Terms of Service.
 
+#### Keyless Domain-Wide Delegation with Application Default Credentials
+
+You can use Application Default Credentials (ADC) or an `access_token` as the source credential and impersonate a domain-wide delegation service account without creating a service account key. Enable the IAM Service Account Credentials API, grant the source principal `roles/iam.serviceAccountTokenCreator` on the target service account, and configure both `service_account` and `impersonated_user_email`.
+
+For local use with gcloud, create user ADC with `gcloud auth application-default login`. Private-keyless ADC such as Workload Identity Federation uses the same provider configuration. An explicitly configured `access_token` also uses this impersonation path and continues to take precedence over ADC.
+
+{{tffile "examples/provider/provider-adc-impersonation.tf"}}
+
+ADC quota project settings, including `GOOGLE_CLOUD_QUOTA_PROJECT`, are forwarded to the IAM Service Account Credentials API. If a quota project is set, the source principal needs `serviceusage.services.use` on `PROJECT_ID`. With the impersonation library used by this provider, the target service account also needs `serviceusage.services.use` on `PROJECT_ID` when the source credential is a user credential or a quota project is used; `roles/serviceusage.serviceUsageConsumer` provides that permission.
+
+If you intentionally call the Admin SDK directly as the ADC principal, omit both `service_account` and `impersonated_user_email`. Setting `impersonated_user_email` with private-keyless ADC but without `service_account` is rejected because those credentials cannot apply a domain-wide delegation subject directly. Service account key ADC continues to use its private key for domain-wide delegation and ignores `service_account`.
+
 ### Using Specific Administrator Roles
 
 You do not need to set up domain-wide delegation if you are granting more specific administrator roles to the service account. If the Terraform pipeline execution environment provides an appropriate token as Application Default Credentials (ADC), you can use the provider without any further setup.

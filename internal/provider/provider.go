@@ -67,8 +67,9 @@ func New(version string) func() *schema.Provider {
 
 				"credentials": {
 					Description: "Either the path to or the contents of a service account key file in JSON format " +
-						"you can manage key files using the Cloud Console).  If not provided, the application default " +
-						"credentials will be used.",
+						"(you can manage key files using the Cloud Console). If not provided, Application Default " +
+						"Credentials will be used. When `service_account` and `impersonated_user_email` are also set, " +
+						"Application Default Credentials without a private key will impersonate that service account.",
 					Type:     schema.TypeString,
 					Optional: true,
 					DefaultFunc: schema.MultiEnvDefaultFunc([]string{
@@ -108,9 +109,11 @@ func New(version string) func() *schema.Provider {
 				},
 
 				"service_account": {
-					Description: "The service account used to create the provided `access_token` if authenticating using " +
-						"the `access_token` method and needing to impersonate a user. This service account will require the " +
-						"GCP role `Service Account Token Creator` if needing to impersonate a user.",
+					Description: "The service account to impersonate through the IAM Service Account Credentials API when " +
+						"`impersonated_user_email` is set and the source credential is `access_token` or Application Default " +
+						"Credentials without a private key. The source principal requires `roles/iam.serviceAccountTokenCreator` " +
+						"on this service account. This field is ignored when `credentials` or service account key Application " +
+						"Default Credentials are used.",
 					Type:     schema.TypeString,
 					Optional: true,
 				},
